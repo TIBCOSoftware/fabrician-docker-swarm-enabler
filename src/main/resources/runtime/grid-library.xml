@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<grid-library os="all">
+   	<grid-library-name>${project.artifactId}-enabler</grid-library-name>
+	<grid-library-version>${project.version}</grid-library-version>
+</grid-library>

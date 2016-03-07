@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<assembly>
+	<id>runtime</id>
+	<baseDirectory>
+	</baseDirectory>
+	<formats>
+		<format>tar.gz</format>
+	</formats>
+
+	<fileSets>
+		<fileSet>
+			<directory>src/main/resources/runtime</directory>
+			<outputDirectory />
+			<includes>
+				<include>configure.xml</include>
+			</includes>
+		</fileSet>
+
+		<fileSet>
+			<directory>src/main/resources/runtime</directory>
+			<outputDirectory />
+			<filtered>true</filtered>
+			<includes>
+				<include>container.xml</include>
+				<include>grid-library.xml</include>
+			</includes>
+		</fileSet>
+
+		<fileSet>
+			<directory>src/main/resources/runtime/scripts</directory>
+			<outputDirectory>scripts</outputDirectory>
+			<includes>
+				<include>*.py</include>
+			</includes>
+		</fileSet>
+		
+		<fileSet>
+			<directory>src/main/resources/content/bin</directory>
+			<outputDirectory>content/bin</outputDirectory>
+			<includes>
+				<include>*</include>
+			</includes>
+		</fileSet>
+	</fileSets>
+</assembly>

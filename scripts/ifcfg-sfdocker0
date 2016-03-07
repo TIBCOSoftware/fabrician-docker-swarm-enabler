@@ -1,0 +1,7 @@
+DEVICE=sfdocker0
+TYPE=Bridge
+BOOTPROTO=static
+IPADDR=172.17.0.1
+NETMASK=255.255.0.0
+ONBOOT=yes
+STP=no

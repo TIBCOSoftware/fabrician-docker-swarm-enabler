@@ -1,0 +1,18 @@
+[Unit]
+Description=Docker Bootstrap Container Engine
+Documentation=https://docs.docker.com
+After=network.target docker-bootstrap.socket
+Requires=docker-bootstrap.socket
+
+[Service]
+EnvironmentFile=/etc/sysconfig/docker-bootstrap
+PIDFile=/var/run/docker-bootstrap.pid
+Type=notify
+ExecStart=/usr/bin/docker daemon $OPTIONS
+MountFlags=slave
+LimitNOFILE=1048576
+LimitNPROC=1048576
+LimitCORE=infinity
+
+[Install]
+WantedBy=multi-user.target

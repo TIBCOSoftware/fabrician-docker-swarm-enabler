@@ -1,0 +1,324 @@
+<container class="com.datasynapse.fabric.container.ExecContainer"
+	name="DockerSwarmEnabler">
+	<import package="com.datasynapse.fabric.common" />
+	<import package="com.datasynapse.fabric.common.script" />
+	<import package="com.datasynapse.fabric.container" />
+	<import package="com.datasynapse.fabric.util" />
+	<import package="com.datasynapse.fabric.stats" />
+	<import package="com.datasynapse.fabric.stats.aggregator" />
+	<import package="com.datasynapse.fabric.stats.evaluator" />
+	<import package="com.datasynapse.fabric.stats.provider" />
+	<import package="com.datasynapse.fabric.domain" />
+
+	<property name="name" value="${project.name}" />
+	<property name="version" value="${project.version}" />
+	<property name="distributionVersion" value="${project.version}" />
+	<property name="blocking" value="false" />
+	<property name="supportedDomainType" value="Default:${component.type.version}" />
+	<property name="supportedDomainType" value="J2EE:${component.type.version}" />
+	<property name="shutdownTimeout" value="60000" />
+	<property name="description" value="${project.description}" />
+	<property name="componentInstanceNumberingEnabled" value="true" />
+
+	<script class="Script">
+		<property name="languageVersion" value="2.5" />
+		<property name="name" value="DockerSwarmEnabler.py" />
+		<property name="language" value="python" />
+	</script>
+
+	<runtimecontexttemplate class="DefaultRuntimeContext">
+
+		<variable class="RuntimeContextVariable">
+			<property name="name" value="DOCKER_SWARM_UUID" />
+			<property name="value" value="" />
+			<property name="autoIncrementType" value="None" />
+			<property name="type" value="String" />
+			<property name="description" value="Unique UUID for this Docker Swarm" />
+		</variable>
+
+		<variable class="RuntimeContextVariable">
+			<property name="name" value="DOCKER_BOOTSTRAP_SOCK" />
+			<property name="value" value="unix:///var/run/docker-bootstrap.sock" />
+			<property name="autoIncrementType" value="None" />
+			<property name="type" value="String" />
+			<property name="description"
+				value="Docker daemon socket for running Swarm containers is required: This is not the main Docker daemon." />
+		</variable>
+
+		<variable class="RuntimeContextVariable">
+			<property name="name" value="DISCOVERY_KEY_STORE" />
+			<property name="value" value="" />
+			<property name="autoIncrementType" value="None" />
+			<property name="type" value="String" />
+			<property name="description"
+				value="Discovery key store used by Swarm cluster and Docker overlay network" />
+		</variable>
+
+		<variable class="RuntimeContextVariable">
+			<property name="name" value="DISCOVERY_SERVICE" />
+			<property name="value" value="" />
+			<property name="autoIncrementType" value="None" />
+			<property name="type" value="String" />
+			<property name="description"
+				value="Discovery service for registering and unregistering Docker services" />
+		</variable>
+
+		<variable class="RuntimeContextVariable">
+			<property name="name" value="DETACH_SWARM_ON_SHUTDOWN" />
+			<property name="value" value="false" />
+			<property name="type" value="String" />
+			<property name="description"
+				value="Whether to detach Docker Swarn on shutdown of component. If true, Swarm cluster is not stopped when component is shutdown." />
+		</variable>
+
+		<variable class="RuntimeContextVariable">
+			<property name="name" value="FORCE_RECONFIG" />
+			<property name="value" value="true" />
+			<property name="type" value="Environment" />
+			<property name="description"
+				value="Force reconfiguration and restart of main docker daemon if it is not using current cluster store." />
+		</variable>
+
+		<variable class="RuntimeContextVariable">
+			<property name="name" value="DOCKER_IMAGE_REGISTRATOR" />
+			<property name="value" value="gliderlabs/registrator" />
+			<property name="autoIncrementType" value="None" />
+			<property name="type" value="String" />
+			<property name="description" value="Registrator image" />
+		</variable>
+
+		<variable class="RuntimeContextVariable">
+			<property name="name" value="DOCKER_COMPOSE_PATH" />
+			<property name="value" value="/usr/local/bin/docker-compose" />
+			<property name="autoIncrementType" value="None" />
+			<property name="type" value="String" />
+			<property name="description" value="Docker compose executable path on host" />
+		</variable>
+
+		<variable class="RuntimeContextVariable">
+			<property name="name" value="DOCKER_CONFIG_PATH" />
+			<property name="value" value="/etc/sysconfig/docker" />
+			<property name="autoIncrementType" value="None" />
+			<property name="type" value="Environment" />
+			<property name="description"
+				value="Docker daemon config file containing OPTIONS='daemon options' " />
+		</variable>
+
+		<variable class="RuntimeContextVariable">
+			<property name="name" value="DOCKER_SWARM_STRATEGY" />
+			<property name="value" value="spread" />
+			<property name="autoIncrementType" value="None" />
+			<property name="type" value="String" />
+			<property name="description"
+				value="Docker swarm strategy: 'spread', 'binpack' or 'random'" />
+		</variable>
+
+
+		<variable class="RuntimeContextVariable">
+			<property name="name" value="DOCKER_SWARM_NETWORK" />
+			<property name="value" value="swarm_network" />
+			<property name="autoIncrementType" value="None" />
+			<property name="type" value="String" />
+			<property name="description" value="Docker swarm network using overlay driver" />
+		</variable>
+
+		<variable class="RuntimeContextVariable">
+			<property name="name" value="COMPOSE_DEPLOY_DIRECTORY" />
+			<property name="value" value="" />
+			<property name="autoIncrementType" value="None" />
+			<property name="type" value="String" />
+			<property name="description"
+				value="Compose deploy directory. Must be a shared NFS directory." />
+		</variable>
+
+		<variable class="RuntimeContextVariable">
+			<property name="name" value="DOCKER_PORT" />
+			<property name="value" value="2375" />
+			<property name="autoIncrementType" value="None" />
+			<property name="type" value="Environment" />
+			<property name="description" value="Docker daemon TCP port" />
+		</variable>
+
+		<variable class="RuntimeContextVariable">
+			<property name="name" value="MANAGE_PORT" />
+			<property name="value" value="4000" />
+			<property name="autoIncrementType" value="None" />
+			<property name="type" value="String" />
+			<property name="description" value="Docker Swarm manage TCP port" />
+		</variable>
+
+		<variable class="RuntimeContextVariable">
+			<property name="name" value="USE_SUDO" />
+			<property name="value" value="false" />
+			<property name="type" value="String" />
+			<property name="description"
+				value="Run Docker with sudo. The sudo must not prompt for password!" />
+		</variable>
+
+		<variable class="RuntimeContextVariable">
+			<property name="name" value="LOCK_WAIT" />
+			<property name="value" value="120000" />
+			<property name="type" value="String" />
+			<property name="description" value="Global lock wait timeout (ms)" />
+		</variable>
+
+		<variable class="RuntimeContextVariable">
+			<property name="name" value="LOCK_EXPIRE" />
+			<property name="value" value="300000" />
+			<property name="type" value="String" />
+			<property name="description" value="Global lock expire timeout (ms)" />
+		</variable>
+
+		<variable class="RuntimeContextVariable">
+			<property name="name" value="START_POLL_PERIOD" />
+			<property name="value" value="10000" />
+			<property name="type" value="String" />
+			<property name="description" value="Start condition poll period" />
+		</variable>
+
+		<variable class="RuntimeContextVariable">
+			<property name="name" value="RUNNING_POLL_PERIOD" />
+			<property name="value" value="60000" />
+			<property name="type" value="String" />
+			<property name="description" value="Running condition poll period" />
+		</variable>
+
+		<variable class="RuntimeContextVariable">
+			<property name="name" value="ARCHIVE_DETECTION_ENABLED" />
+			<property name="value" value="true" />
+			<property name="type" value="String" />
+			<property name="description" value="Wheter archive detection is enabled" />
+		</variable>
+
+		<variable class="RuntimeContextVariable">
+			<property name="name" value="ARCHIVE_DETECTION_FREQUENCY" />
+			<property name="value" value="300" />
+			<property name="type" value="String" />
+			<property name="description" value="Archive detection frequency in seconds" />
+		</variable>
+
+	</runtimecontexttemplate>
+
+	<unixcommand class="LifecycleCommand">
+		<property name="shutdownCommand" value="" />
+		<property name="startupCommand" value="" />
+	</unixcommand>
+
+	<windowscommand class="LifecycleCommand">
+		<property name="shutdownCommand" value="" />
+		<property name="startupCommand" value="" />
+	</windowscommand>
+
+
+	<supportedFeature class="Feature">
+		<property name="name" value="Application Logging Support" />
+		<property name="description"
+			value="Support for handling of custom application logs" />
+		<property name="infoDescription"
+			value="Specify how often checkpoint copies of application log files are made, and whether or not application logs are archived upon deactivation." />
+		<property name="infoClass"
+			value="com.datasynapse.fabric.domain.featureinfo.ApplicationLoggingInfo" />
+	</supportedFeature>
+
+	<supportedFeature class="Feature">
+		<property name="name" value="Archive Management Support" />
+		<property name="description"
+			value="Support for managing J2EE archives if Docker container represents a J2EE-platform" />
+		<property name="infoClass"
+			value="com.datasynapse.fabric.domain.featureinfo.ArchiveManagementFeatureInfo" />
+	</supportedFeature>
+
+
+	<statisticsprovider class="ContainerScriptStatisticsProvider">
+
+		<supportedstatistic class="BasicStatisticsMetadata">
+			<property name="name" value="Docker CPU Usage %" />
+			<property name="description" value="Docker CPU usage percentage" />
+			<property name="shared" value="False" />
+			<property name="default" value="True" />
+			<property name="units" value="%" />
+			<aggregator class="AverageAggregator">
+				<property name="inputStatisticName" value="Docker CPU Usage %" />
+			</aggregator>
+		</supportedstatistic>
+
+		<supportedstatistic class="BasicStatisticsMetadata">
+			<property name="name" value="Docker Memory Usage %" />
+			<property name="description" value="Docker memory usage percentage" />
+			<property name="shared" value="False" />
+			<property name="default" value="True" />
+			<property name="units" value="%" />
+			<aggregator class="AverageAggregator">
+				<property name="inputStatisticName" value="Docker Memory Usage %" />
+			</aggregator>
+		</supportedstatistic>
+
+		<supportedstatistic class="BasicStatisticsMetadata">
+			<property name="name" value="Docker Memory Usage (MB)" />
+			<property name="description" value="Docker memory usage (MB)" />
+			<property name="shared" value="False" />
+			<property name="default" value="True" />
+			<property name="units" value="MB" />
+			<aggregator class="AverageAggregator">
+				<property name="inputStatisticName" value="Docker Memory Usage (MB)" />
+			</aggregator>
+		</supportedstatistic>
+
+		<supportedstatistic class="BasicStatisticsMetadata">
+			<property name="name" value="Docker Memory Limit (MB)" />
+			<property name="description" value="Docker Memory Limit (MB)" />
+			<property name="shared" value="False" />
+			<property name="default" value="True" />
+			<property name="units" value="MB" />
+			<aggregator class="AverageAggregator">
+				<property name="inputStatisticName" value="Docker Memory Limit (MB)" />
+			</aggregator>
+		</supportedstatistic>
+
+		<supportedstatistic class="BasicStatisticsMetadata">
+			<property name="name" value="Docker Network Input (MB)" />
+			<property name="description" value="Docker network input (MB)" />
+			<property name="shared" value="False" />
+			<property name="default" value="True" />
+			<property name="units" value="MB" />
+			<aggregator class="AverageAggregator">
+				<property name="inputStatisticName" value="Docker Network Input (MB)" />
+			</aggregator>
+		</supportedstatistic>
+
+		<supportedstatistic class="BasicStatisticsMetadata">
+			<property name="name" value="Docker Network Output (MB)" />
+			<property name="description" value="Docker network output (MB)" />
+			<property name="shared" value="False" />
+			<property name="default" value="True" />
+			<property name="units" value="MB" />
+			<aggregator class="AverageAggregator">
+				<property name="inputStatisticName" value="Docker Network Output (MB)" />
+			</aggregator>
+		</supportedstatistic>
+
+		<supportedstatistic class="BasicStatisticsMetadata">
+			<property name="name" value="Docker Block Output (MB)" />
+			<property name="description" value="Docker block device output (MB)" />
+			<property name="shared" value="False" />
+			<property name="default" value="True" />
+			<property name="units" value="MB" />
+			<aggregator class="AverageAggregator">
+				<property name="inputStatisticName" value="Docker Block Output (MB)" />
+			</aggregator>
+		</supportedstatistic>
+
+		<supportedstatistic class="BasicStatisticsMetadata">
+			<property name="name" value="Docker Block Input (MB)" />
+			<property name="description" value="Docker block device input (MB)" />
+			<property name="shared" value="False" />
+			<property name="default" value="True" />
+			<property name="units" value="MB" />
+			<aggregator class="AverageAggregator">
+				<property name="inputStatisticName" value="Docker Block Input (MB)" />
+			</aggregator>
+		</supportedstatistic>
+
+	</statisticsprovider>
+
+</container>

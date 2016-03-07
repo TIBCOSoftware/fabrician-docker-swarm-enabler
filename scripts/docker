@@ -1,0 +1,1 @@
+OPTIONS='--host=tcp://0.0.0.0:2375 --host=unix:///var/run/docker.sock -b=sfdocker0 --icc=true --selinux-enabled=false --storage-driver=devicemapper --storage-opt dm.datadev=/dev/vg-docker/data --storage-opt dm.metadatadev=/dev/vg-docker/metadata -p /var/run/docker.pid'
