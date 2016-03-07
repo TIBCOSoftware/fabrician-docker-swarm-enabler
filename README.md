@@ -159,9 +159,9 @@ Silver Fabric CD target criteria must be specified as follows:
 
 Silver Fabric CD deployment properties are shown below:
 
-* project-name=<name of project, e.g. webappV2>
-* remove-images=<true or false>
-* remove-volumes=<true or false>
+* project-name=*name of project, e.g. webappV2*
+* remove-images=*true or false*
+* remove-volumes=*true or false*
 
 The project Zip archive must contain a project folder with a docker-compose.yml file. 
 In addition to the docker compose file, the project folder must contain any relevant build files.  
