@@ -19,8 +19,7 @@ This Enabler creates and manages a multiple host Docker Swarm cluster. Docker Sw
 requires a cluster key store. For production use, a cluster key store is expected to be running
 in a highly available configuration. For development use, the cluster key store may comprise of a single node. 
 
-The solution architecture implemented by this Enabler requires a *discovery service* 
-so that the Docker services  running in the Docker Swarm cluster can be automatically registered and unregistered  
+The solution architecture implemented by this Enabler requires a *discovery service* so that the Docker services  running in the Docker Swarm cluster can be automatically registered and unregistered  
 with the discovery service. This allows easy discovery of the services running in the various Docker containers on the Docker Swarm cluster.
 
 *Consul Enabler* can be used in conjunction with this enabler to provide a highly-available cluster key store and 
@@ -41,16 +40,16 @@ The Bootstrap Docker Daemon is used to run following Docker containers:
 
 The `swarm` bootstrap containers use the cluster key store and the `registrator` key store uses the discovery service. 
 
-At the time of the Silver Fabric Component startup, if any of the Bootstrap Docker containers listed above is already running, 
+At the time of the Silver Fabric Component startup, if any of the Bootstrap Docker containers listed above is already running
 but is using a cluster key store other than the current cluster key store, and if `FORCE_RECONFIG` is set to `true` in the
 Silver Fabric Component, the running container is forcibly stopped by this Enabler and a new container is created and started, otherwise, a startup
 error is raised.
 
 All the containers using the Bootstrap Docker Daemon use `host` networking.
 
-At the time of the Silver Fabric Component startup, if the main Docker daemon is not configured to use any cluster key store, 
-this Enabler  reconfigures the main Docker daemon to use the current cluster key store and restarts the main Docker daemon. 
-The main Daemon reconfiguration and restart is done via a  shell script, [`configure-dameon.sh`] (src/main/resources/content/bin/configure-daemon.sh).
+At the time of the Silver Fabric Component startup, if the Main Docker Daemon is not configured to use any cluster key store, 
+this Enabler  reconfigures the Main Docker Daemon to use the current cluster key store and restarts the Main Docker Daemon. 
+The Main Docker Daemon reconfiguration and restart is done via a  shell script, [`configure-dameon.sh`] (src/main/resources/content/bin/configure-daemon.sh).
 This shell script may need to be customized depending on how Docker has been enabled on a host.
 
 At the time of the Silver Fabric Component startup, if the Main Docker Daemon on a host is already 
@@ -101,11 +100,9 @@ so both these services automatically startup when the host operating system is b
 ### Configuring Main Docker Daemon on the Silver Fabric Engine host
 ------------------------------------------------------------------------------------------
 
-Create a file [`/etc/sysconfig/docker`](scripts/docker) and specify Docker options in this file as shown below:
+Create a file [`/etc/sysconfig/docker`](scripts/docker) and specify Docker OPTIONS in this file.
 
-`OPTIONS='--host=tcp://0.0.0.0:2375 --host=unix:///var/run/docker.sock -b=sfdocker0 --icc=true --selinux-enabled=false --storage-driver=devicemapper --storage-opt dm.datadev=/dev/vg-docker/data --storage-opt dm.metadatadev=/dev/vg-docker/metadata -p /var/run/docker.pid'
-
-Note the name of the default bridge is set to `sfdocker0` and not `docker0`. The reason for this is that the default `docker0` name interferes
+Note the name of the default bridge in the Docker OPTIONS is set to `sfdocker0` and not `docker0`. The reason for this is that the default `docker0` name interferes
 with Silver Fabric Engine Daemon startup, which, by default, is configured to use the first network interface available in the alphabetical order. 
 To avoid this interference, one solution is to create a network bridge named `sfdocker0` using following commands (tested
 on Centos 7):
@@ -116,7 +113,7 @@ on Centos 7):
 
 To make this bridge persistent on reboot, create a file named [`/etc//sysconfig/network-scripts/ifcfg-sfdocker0`] (scripts/ifcfg-sfdocker0)
 
-In [`/usr/lib/systemd/system/docker.service`](scripts/dokcer.service)  file add  `/etc/sysconfig/docker` as the `EnviornmentFile`.
+In [`/usr/lib/systemd/system/docker.service`](scripts/docker.service)  file add  `/etc/sysconfig/docker` as the `EnviornmentFile`.
 Enable Main Docker daemon service using the command shown below:
 
 * sudo systemctl enable docker.service
@@ -162,12 +159,13 @@ Silver Fabric CD target criteria must be specified as follows:
 
 Silver Fabric CD deployment properties are shown below:
 
-* project-name=*name of project, e.g. webappV2*
-* remove-images=*true or false*
-* remove-volumes=*true or false*
+* project-name=<name of project, e.g. webappV2>
+* remove-images=<true or false>
+* remove-volumes=<true or false>
 
 The project Zip archive must contain a project folder with a docker-compose.yml file. 
-In addition to the docker compose file, the project folder must contain any relevant build files. Here is an [example compose project](compose/projects/webapp). To deploy this project via Silver Fabric CD REST API, 
+In addition to the docker compose file, the project folder must contain any relevant build files.  
+Here is an [example compose project](compose/projects/webapp). To deploy this project via Silver Fabric CD REST API, 
 you must first create a Zip archive by compressing the `webapp` project folder to create a Zip archive `webapp.zip`, 
 with `webapp` as the top-level folder within the Zip archive.
 
@@ -187,7 +185,7 @@ Components using this Enabler can track following Docker container statistics fo
 |`Docker Block Output (MB)`|Docker block device output (MB)|
 |`Docker Block Input (MB)`|Docker block device input (MB)|
 
-The Enabler statistics contain a sum of the statistics from all the Docker containers managed by the main Docker daemon
+The Enabler statistics contain a sum of the statistics from all the Docker containers managed by the Main Docker Daemon
 on a given Swarm node. 
 
 ### Silver Fabric Runtime Context Variables
@@ -201,7 +199,7 @@ The Enabler provides following Silver Fabric runtime variables.
 |Variable Name|Default Value|Type|Description|Export|Auto Increment|
 |---|---|---|---|---|---|
 |`DOCKER_SWARM_UUID`|| String| Unique UUID for this Docker Swarm. |false|None|
-|`DOCKER_BOOTSTRAP_SOCK`|unix:///var/run/docker-bootstrap.sock| String| Docker daemon socket for running Swarm containers is required: This is not the main Docker daemon. |false|None|
+|`DOCKER_BOOTSTRAP_SOCK`|unix:///var/run/docker-bootstrap.sock| String| Docker daemon socket for running Swarm containers is required: This is not the Main Docker Daemon. |false|None|
 |`DISCOVERY_KEY_STORE`|| String| Discovery key store used by Swarm cluster and Docker overlay network |false|None|
 |`DISCOVERY_SERVICE`|| String| Discovery service for registering and unregistering Docker services |false|None|
 |`DETACH_SWARM_ON_SHUTDOWN`|false| String| Whether to detach Docker Swarm on shutdown of component. If true, Swarm cluster is not stopped when component is shutdown. |false|None|
@@ -226,10 +224,10 @@ separate Silver Fabric utility Component in its own stack that is used by other 
 * [Docker Swarm Stack](images/docker-swarm-stack.png)
 
 [Install Docker]:<https://docs.docker.com/installation/>
-[Docker Multi-host Networking]<https://docs.docker.com/engine/userguide/networking/get-started-overlay/>
+[Docker Multi-host Networking]:<https://docs.docker.com/engine/userguide/networking/get-started-overlay/>
 [Configure Docker Remote API]:http://www.virtuallyghetto.com/2014/07/quick-tip-how-to-enable-docker-remote-api.html
 [Docker and SELinux]:<http://www.projectatomic.io/docs/docker-and-selinux/>
 [Resource Preference rule]:<https://github.com/fabrician/docker-enabler/blob/master/src/main/resources/images/docker_resource_preference.gif>
 [Docker Daemon reference]:<https://docs.docker.com/engine/reference/commandline/daemon/>
 [Docker Storage blog]:<http://www.projectatomic.io/blog/2015/06/notes-on-fedora-centos-and-docker-storage-drivers/>
-[Silver Fabric Cloud Administration Guide]<https://docs.tibco.com/pub/silver_fabric/5.7.1/doc/pdf/TIB_silver_fabric_5.7.1_cloud_administration.pdf>
+[Silver Fabric Cloud Administration Guide]:<https://docs.tibco.com/pub/silver_fabric/5.7.1/doc/pdf/TIB_silver_fabric_5.7.1_cloud_administration.pdf>
