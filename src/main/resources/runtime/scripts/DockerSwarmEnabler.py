@@ -170,13 +170,7 @@ class DockerSwarm:
         try:
             self.__lock()
             if not self.__swarmNetworkExists():
-                cmdList=["docker", "-H", self.__manageAddr, "network", "create"]
-                options=getVariableValue("DOCKER_SWARM_NETWORK_OPTIONS")
-                if options:
-                    optionsList=options.split()
-                    cmdList.extend(optionsList)
-                cmdList.append(self.__swarmNetwork)
-                    
+                cmdList=["docker", "-H", self.__manageAddr, "network", "create", self.__swarmNetwork]
                 logger.info("Executing:" + list2str(cmdList))
                 etcode = call(cmdList)
                 logger.info("Return code:" + str(retcode))

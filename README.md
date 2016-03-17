@@ -206,9 +206,8 @@ The Enabler provides following Silver Fabric runtime variables.
 |`FORCE_RECONFIG`|true| Environment| Force reconfiguration and restart of main docker daemon if it is not using current cluster store |false|None|
 |`DOCKER_COMPOSE_PATH`|/usr/local/bin/docker-compose| String| Docker compose executable path on host Docker services |false|None|
 |`DOCKER_CONFIG_PATH`|/usr/local/bin/docker-compose| String| Docker daemon config file containing OPTIONS='<daemon options>' |false|None|
-|`DOCKER_SWARM_STRATEGY`|spread| String|Docker swarm strategy: 'spread', 'binpack' or 'random' |false|None|
-|`DOCKER_SWARM_NETWORK`|swarm_network|String| Docker swarm network using overlay driver |false|None|
-|`DOCKER_SWARM_NETWORK_OPTIONS`|--subnet=172.18.0.0/16|String| Docker swarm network options using overlay driver |false|None|
+|`DOCKER_SWARM_STRATEGY`|spread| String| Docker swarm strategy: 'spread', 'binpack' or 'random' |false|None|
+|`DOCKER_SWARM_NETWORK`|spread| String| Docker swarm network using overlay driver |false|None|
 |`COMPOSE_DEPLOY_DIRECTORY`|| String| Compose deploy directory. Must be a shared NFS directory |false|None|
 |`DOCKER_PORT`|2375| String| Main Docker daemon TCP port |false|None|
 |`MANAGE_PORT`|4000| String| Swarm manage replica TCP port |false|None|
