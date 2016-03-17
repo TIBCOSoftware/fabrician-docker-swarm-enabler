@@ -121,6 +121,14 @@
 			<property name="type" value="String" />
 			<property name="description" value="Docker swarm network using overlay driver" />
 		</variable>
+		
+		<variable class="RuntimeContextVariable">
+			<property name="name" value="DOCKER_SWARM_NETWORK_OPTIONS" />
+			<property name="value" value="--subnet=172.18.0.0/16" />
+			<property name="autoIncrementType" value="None" />
+			<property name="type" value="String" />
+			<property name="description" value="Docker swarm network options using overlay driver" />
+		</variable>
 
 		<variable class="RuntimeContextVariable">
 			<property name="name" value="COMPOSE_DEPLOY_DIRECTORY" />
